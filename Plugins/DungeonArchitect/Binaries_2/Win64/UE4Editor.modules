@@ -1,0 +1,8 @@
+{
+	"BuildId": "14830424",
+	"Modules": 
+	{
+		"DungeonArchitectEditor": "UE4Editor-DungeonArchitectEditor.dll",
+		"DungeonArchitectRuntime": "UE4Editor-DungeonArchitectRuntime.dll"
+	}
+}

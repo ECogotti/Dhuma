@@ -17,11 +17,6 @@
 			"MarketplaceURL": "https://www.unrealengine.com/marketplace/en-US/product/19f41df17ac5412c96ac38cbaeb43810"
 		},
 		{
-			"Name": "DungeonArchitect",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/1a4ad2a06f174a26af8a29728241ce42"
-		},
-		{
 			"Name": "Prefabricator",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/39ccbbf668e84847890992df9922e355"
