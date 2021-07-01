@@ -154,7 +154,7 @@ void SnapLib::FSnapGraphGenerator::GrowNode(SnapLib::ISnapGraphNodePtr MissionNo
                     FBox DoorLocalBounds = FBox(FVector(-200, -50, 0), FVector(200, 50, 400));
                     FBox DoorWorldBounds = DoorLocalBounds.TransformBy(DoorWorldTransform);
                 
-                    DIAGNOSTIC_LOG(AssignModule, Module->GetLevel(), Module->GetBounds()/*.Num() > 0 ? Module->GetBounds()[0] : FBox()*/, ModuleNode->WorldTransform, GrowthFrame.DoorIdx, RemoteDoorIndex, //TO be fixed Roberta
+                    DIAGNOSTIC_LOG(AssignModule, Module->GetLevel(), Module->GetBounds()/*.Num() > 0 ? Module->GetBounds()[0] : FBox()*/, ModuleNode->WorldTransform, GrowthFrame.DoorIdx, RemoteDoorIndex,
                                   DoorId, RemoteDoorId, NodeId, RemoteNodeId, DoorWorldBounds);
                 }
 

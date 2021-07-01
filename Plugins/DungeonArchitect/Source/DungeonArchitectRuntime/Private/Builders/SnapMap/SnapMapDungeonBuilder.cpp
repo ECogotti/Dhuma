@@ -137,7 +137,6 @@ namespace {
 }
 
 SnapLib::FModuleNodePtr USnapMapDungeonBuilder::GenerateModuleNodeGraph(int32 InSeed) const {
-   UE_LOG(SnapMapDungeonBuilderLog, Error, TEXT("Test: GenerateModuleNodeGraph")); //roberta
     UGrammarScriptGraph* MissionGraph = NewObject<UGrammarScriptGraph>(SnapMapModel.Get());
     SnapMapModel->MissionGraph = MissionGraph;
 

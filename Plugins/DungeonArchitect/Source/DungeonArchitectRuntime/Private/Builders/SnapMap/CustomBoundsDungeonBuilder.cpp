@@ -109,7 +109,7 @@ void UCustomBoundsDungeonBuilder::BuildNonThemedDungeonImpl(UWorld* World, TShar
       });
 }
 
-namespace {
+namespace CustomBounds{
    void PopulateNegationVolumeBounds(ADungeon* InDungeon, TArray<SnapLib::FSnapNegationVolumeState>& OutNegationVolumes) {
       UWorld* World = InDungeon ? InDungeon->GetWorld() : nullptr;
       if (!World) return;
@@ -160,7 +160,7 @@ SnapLib::FModuleNodePtr UCustomBoundsDungeonBuilder::GenerateModuleNodeGraph(int
    StaticState.bAllowModuleRotations = SnapMapConfig->bAllowModuleRotations;
    StaticState.Diagnostics = Diagnostics;
 
-   PopulateNegationVolumeBounds(Dungeon, StaticState.NegationVolumes);
+   CustomBounds::PopulateNegationVolumeBounds(Dungeon, StaticState.NegationVolumes);
 
    SnapLib::IModuleDatabasePtr ModDB = MakeShareable(new FCustomBoundsModuleDatabaseImpl(SnapMapConfig->ModuleDatabase));
    SnapLib::FSnapGraphGenerator GraphGenerator(ModDB, StaticState);
