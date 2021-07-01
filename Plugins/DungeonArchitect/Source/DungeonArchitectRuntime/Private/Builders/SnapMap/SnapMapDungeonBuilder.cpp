@@ -33,6 +33,7 @@ USnapMapDungeonBuilder::USnapMapDungeonBuilder(const FObjectInitializer& ObjectI
 }
 
 void USnapMapDungeonBuilder::BuildNonThemedDungeonImpl(UWorld* World, TSharedPtr<FDungeonSceneProvider> SceneProvider) {
+   UE_LOG(SnapMapDungeonBuilderLog, Error, TEXT("Test: BuildNonThemedDungeonImpl")); //roberta
     SnapMapModel = Cast<USnapMapDungeonModel>(model);
     SnapMapConfig = Cast<USnapMapDungeonConfig>(config);
 
@@ -136,6 +137,7 @@ namespace {
 }
 
 SnapLib::FModuleNodePtr USnapMapDungeonBuilder::GenerateModuleNodeGraph(int32 InSeed) const {
+   UE_LOG(SnapMapDungeonBuilderLog, Error, TEXT("Test: GenerateModuleNodeGraph")); //roberta
     UGrammarScriptGraph* MissionGraph = NewObject<UGrammarScriptGraph>(SnapMapModel.Get());
     SnapMapModel->MissionGraph = MissionGraph;
 
@@ -172,6 +174,7 @@ bool USnapMapDungeonBuilder::IdentifyBuildSucceeded() const {
 }
 
 void USnapMapDungeonBuilder::BuildPreviewSnapLayout() {
+   UE_LOG(SnapMapDungeonBuilderLog, Error, TEXT("Test: BuildPreviewSnapLayout")); //roberta
     SnapMapModel = Cast<USnapMapDungeonModel>(model);
     SnapMapConfig = Cast<USnapMapDungeonConfig>(config);
 
@@ -249,9 +252,11 @@ void USnapMapDungeonBuilder::DrawDebugData(UWorld* InWorld, bool bPersistent /*=
 
             // Draw the bounds
             FVector Center, Extent;
-            Chunk->Bounds.GetCenterAndExtents(Center, Extent);
-            DrawDebugBox(InWorld, Center, Extent, FQuat::Identity, FColor::Red, false, -1, 0, 10);
-
+            for (auto bound : Chunk->Bounds)
+            {
+               bound.GetCenterAndExtents(Center, Extent);
+               DrawDebugBox(InWorld, Center, Extent, FQuat::Identity, FColor::Red, false, -1, 0, 10);
+            }
             // Draw the connections to the doors
             float AvgZ = 0;
             const FVector CylinderOffset = FVector(0, 0, 10);

@@ -275,6 +275,7 @@ void FSnapMapEditor_VisualizeAppMode::OnDungeonDestroyed(ADungeon* InDungeon) {
 }
 
 void FSnapMapEditor_VisualizeAppMode::OnResultNodeDoubleClicked(UEdGraphNode* InNode) {
+   UE_LOG(LogTemp, Log, TEXT("OnResultNodeDoubleClicked called"));
     UEdGraphNode_GrammarNode* GrammarEdNode = Cast<UEdGraphNode_GrammarNode>(InNode);
     if (GrammarEdNode) {
         ADungeon* DungeonActor = GetDungeonActor();
@@ -282,7 +283,9 @@ void FSnapMapEditor_VisualizeAppMode::OnResultNodeDoubleClicked(UEdGraphNode* In
             USnapMapDungeonModel* SnapModel = Cast<USnapMapDungeonModel>(DungeonActor->GetModel());
             FSnapMapModuleInstanceSerializedData ModuleData;
             if (SnapModel && SnapModel->SearchModuleInstance(GrammarEdNode->NodeId, ModuleData)) {
-                FBox WorldModuleBounds = ModuleData.ModuleBounds.TransformBy(ModuleData.WorldTransform);
+                FBox WorldModuleBounds;
+                if(ModuleData.ModuleBounds.Num()>0)
+                  WorldModuleBounds = ModuleData.ModuleBounds[0].TransformBy(ModuleData.WorldTransform); //TODO Roberta
                 Viewport->GetViewportClient()->FocusViewportOnBox(WorldModuleBounds);
                 UE_LOG(LogFlowVisualization, Log, TEXT("Visualization Result Node double clicked: %s"), *WorldModuleBounds.ToString());
             }

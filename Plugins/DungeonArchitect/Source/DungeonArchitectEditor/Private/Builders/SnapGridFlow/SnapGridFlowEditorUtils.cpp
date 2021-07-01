@@ -10,21 +10,22 @@
 namespace {
     class FMDBGridFlowModulePolicy {
     public:
-        FBox CalculateBounds(ULevel* Level) const {
-            FBox LevelBounds = FBox(ForceInit);
+        TArray<FBox> CalculateBounds(ULevel* Level) const {
+           TArray<FBox> LevelBounds;// = FBox(ForceInit);
             for (AActor* Actor : Level->Actors) {
                 if (ASnapGridFlowModuleBoundsActor* BoundsActor = Cast<ASnapGridFlowModuleBoundsActor>(Actor)) {
                     USnapGridFlowModuleBoundsAsset* BoundsAsset = BoundsActor->BoundsComponent->ModuleBounds.LoadSynchronous();
                     const FVector ModuleSize = BoundsAsset->ChunkSize * FMathUtils::ToVector(BoundsActor->BoundsComponent->NumChunks);;
                     const FBox BaseBounds = FBox(FVector::ZeroVector, ModuleSize);
                     const FTransform BaseTransform(FRotator::ZeroRotator, BoundsActor->GetActorLocation());
-                    LevelBounds = BaseBounds.TransformBy(BaseTransform);
+                    LevelBounds.Push(BaseBounds.TransformBy(BaseTransform));
                     break;
                 }
             }
-            if (!LevelBounds.IsValid) {
+            //if (!LevelBounds.IsValid) {
+            if (LevelBounds.Num() == 0) {
                 // TODO: Notify the user
-                LevelBounds = FBox(ForceInitToZero);
+                LevelBounds.Push(FBox(ForceInitToZero));
             }
             return LevelBounds;
         }

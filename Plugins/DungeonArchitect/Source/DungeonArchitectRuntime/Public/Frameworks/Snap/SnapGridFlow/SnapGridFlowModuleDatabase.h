@@ -148,7 +148,7 @@ struct DUNGEONARCHITECTRUNTIME_API FSnapGridFlowModuleDatabaseItem {
     float SelectionWeight = 1.0f;
     
     UPROPERTY(VisibleAnywhere, Category = Module)
-    FBox ModuleBounds;
+    TArray<FBox> ModuleBounds; //Roberta
 
     UPROPERTY(VisibleAnywhere, Category = Module)
     FIntVector NumChunks = FIntVector(1, 1, 1);

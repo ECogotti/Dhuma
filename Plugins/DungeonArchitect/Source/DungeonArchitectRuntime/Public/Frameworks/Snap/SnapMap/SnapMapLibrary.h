@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "Frameworks/Snap/Lib/SnapLibrary.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
+#include "Frameworks/Snap/SnapMap/CustomBoundsModuleDB.h"
 
 class UGrammarScriptGraphNode;
 
@@ -31,7 +32,7 @@ public:
     FSnapMapModuleDatabaseItem GetItem() const { return Item; }
     virtual SnapLib::FModuleNodePtr CreateModuleNode(const FGuid& InNodeId) override;
 
-    virtual FBox GetBounds() override { return Item.ModuleBounds; }
+    virtual TArray<FBox> GetBounds() override { return Item.ModuleBounds; }
     virtual TSoftObjectPtr<UWorld> GetLevel() override { return Item.Level; }
     virtual FName GetCategory() override { return Item.Category; }
     
@@ -42,5 +43,10 @@ private:
 class DUNGEONARCHITECTRUNTIME_API FSnapMapModuleDatabaseImpl : public SnapLib::IModuleDatabase {
 public:
     FSnapMapModuleDatabaseImpl(USnapMapModuleDatabase* ModuleDB);
+};
+
+class DUNGEONARCHITECTRUNTIME_API FCustomBoundsModuleDatabaseImpl : public SnapLib::IModuleDatabase {
+public:
+   FCustomBoundsModuleDatabaseImpl(UCustomBoundsModuleDB* ModuleDB);
 };
 

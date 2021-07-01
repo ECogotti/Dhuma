@@ -11,6 +11,7 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Core/Utils/MathUtils.h"
 #include "GameFramework/PlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogLevelStreamingModel);
@@ -343,7 +344,9 @@ namespace {
         OutSourceLocations.Reset();
         for (UDungeonStreamingChunk* Chunk : InChunks) {
             if (Chunk && Chunk->bSpawnRoomChunk) {
-                OutSourceLocations.Add(Chunk->Bounds.GetCenter());
+               //roberta: compute the center of all bounds //TODO any better solution?
+               FBox bound = FMathUtils::ComputeCompoundBound(Chunk->Bounds);
+                OutSourceLocations.Add(/*Chunk->Bounds*/bound.GetCenter());
             }
         }
     }

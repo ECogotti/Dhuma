@@ -72,7 +72,7 @@ public:
     explicit FSnapGridFlowGraphModDBItemImpl(const FSnapGridFlowModuleDatabaseItem& InItem) : Item(InItem) {}
     FSnapGridFlowModuleDatabaseItem GetItem() const { return Item; }
 
-    virtual FBox GetBounds() override { return Item.ModuleBounds; }
+    virtual TArray<FBox> GetBounds() override { return Item.ModuleBounds; }
     virtual TSoftObjectPtr<UWorld> GetLevel() override { return Item.Level; }
     virtual FName GetCategory() override { return Item.Category; }
     virtual SnapLib::FModuleNodePtr CreateModuleNode(const FGuid& InNodeId) override;
