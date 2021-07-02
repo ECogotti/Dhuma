@@ -6,4 +6,3 @@
 uint32 GetTypeHash(const FSnapMapModuleDatabaseItem& A) {
     return HashCombine(GetTypeHash(A.Level), GetTypeHash(A.Category));
 }
-

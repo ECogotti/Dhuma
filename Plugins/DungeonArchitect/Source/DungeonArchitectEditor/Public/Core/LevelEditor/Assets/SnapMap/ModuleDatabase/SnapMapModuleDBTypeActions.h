@@ -17,3 +17,16 @@ public:
 
 };
 
+class DUNGEONARCHITECTEDITOR_API FCustomBoundsModuleDBTypeActions : public FAssetTypeActions_Base {
+public:
+   // IAssetTypeActions interface
+   virtual FText GetName() const override;
+   virtual FColor GetTypeColor() const override;
+   virtual UClass* GetSupportedClass() const override;
+   virtual bool HasActions(const TArray<UObject*>& InObjects) const override { return false; }
+   virtual uint32 GetCategories() override;
+   virtual const TArray<FText>& GetSubMenus() const override;
+   // End of IAssetTypeActions interface
+
+};
+

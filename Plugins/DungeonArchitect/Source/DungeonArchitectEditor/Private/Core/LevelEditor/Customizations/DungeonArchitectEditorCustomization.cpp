@@ -5,6 +5,7 @@
 #include "Builders/SnapGridFlow/SnapGridFlowEditorUtils.h"
 #include "Builders/SnapMap/SnapMapDungeonBuilder.h"
 #include "Builders/SnapMap/Utils/SnapMapModuleDBUtils.h"
+#include "Builders/SnapMap/Utils/CustomBoundsModuleDBUtils.h"
 #include "Core/Common/Utils/DungeonEditorUtils.h"
 #include "Core/Dungeon.h"
 #include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMesh.h"
@@ -17,6 +18,7 @@
 #include "Frameworks/LevelStreaming/DungeonLevelStreamer.h"
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleDatabase.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
+#include "Frameworks/Snap/SnapMap/CustomBoundsModuleDB.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetSelection.h"
@@ -476,8 +478,8 @@ FReply FDungeonDebugCustomization::ExecuteCommand(IDetailLayoutBuilder* DetailBu
     return FReply::Handled();
 }
 
-//////////////// FSnapModuleDatabaseCustomization ////////////////////
-void FSnapModuleDatabaseCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) {
+//////////////// FSnapCustomBoundsModuleDatabaseCustomization ////////////////////
+void FSnapCustomBoundsModuleDatabaseCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) {
     IDetailCategoryBuilder& SnapMapCategory = DetailBuilder.EditCategory("Module Cache");
 
     SnapMapCategory.AddCustomRow(LOCTEXT("SnapMapCommand_FilterRebuildModuleCache", "Build Module Cache"))
@@ -501,25 +503,73 @@ void FSnapModuleDatabaseCustomization::CustomizeDetails(IDetailLayoutBuilder& De
             .AutoHeight()
             [
                 SNew(SButton)
-					.Text(LOCTEXT("SnapMapCommand_RebuildModuleCache", "Build Module Cache"))
-					.OnClicked(FOnClicked::CreateStatic(&FSnapModuleDatabaseCustomization::BuildDatabaseCache,
+					.Text(LOCTEXT("SnapMapCommand_RebuildModuleCache", "Build Module Cache Custom"))
+					.OnClicked(FOnClicked::CreateStatic(&FSnapCustomBoundsModuleDatabaseCustomization::BuildDatabaseCache,
                                                         &DetailBuilder))
             ]
         ]
     ];
 }
 
-TSharedRef<IDetailCustomization> FSnapModuleDatabaseCustomization::MakeInstance() {
-    return MakeShareable(new FSnapModuleDatabaseCustomization);
+TSharedRef<IDetailCustomization> FSnapCustomBoundsModuleDatabaseCustomization::MakeInstance() {
+    return MakeShareable(new FSnapCustomBoundsModuleDatabaseCustomization);
 }
 
-FReply FSnapModuleDatabaseCustomization::BuildDatabaseCache(IDetailLayoutBuilder* DetailBuilder) {
-    USnapMapModuleDatabase* ModuleDatabase = FDungeonEditorUtils::GetBuilderObject<USnapMapModuleDatabase>(DetailBuilder);
+FReply FSnapCustomBoundsModuleDatabaseCustomization::BuildDatabaseCache(IDetailLayoutBuilder* DetailBuilder) {
+   UE_LOG(LogTemp, Log, TEXT("FSnapCustomBoundsModuleDatabaseCustomization::BuildDatabaseCache"));
+    UCustomBoundsModuleDB* ModuleDatabase = FDungeonEditorUtils::GetBuilderObject<UCustomBoundsModuleDB>(DetailBuilder);
     if (ModuleDatabase) {
-        FSnapMapModuleDBUtils::BuildModuleDatabaseCache(ModuleDatabase);
+        FCustomBoundsModuleDBUtils::BuildModuleDatabaseCache(ModuleDatabase);
     }
 
     return FReply::Handled();
+}
+
+
+//////////////// FSnapModuleDatabaseCustomization ////////////////////
+void FSnapModuleDatabaseCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) {
+   IDetailCategoryBuilder& SnapMapCategory = DetailBuilder.EditCategory("Module Cache");
+
+   SnapMapCategory.AddCustomRow(LOCTEXT("SnapMapCommand_FilterRebuildModuleCache", "Build Module Cache"))
+      .WholeRowContent()
+      [
+         SNew(SBorder)
+         .BorderImage(FDungeonArchitectStyle::Get().GetBrush("DungeonArchitect.RoundDarkBorder"))
+      .BorderBackgroundColor(FColor(32, 32, 32))
+      .Padding(FMargin(10, 10))
+      [
+         SNew(SVerticalBox)
+         + SVerticalBox::Slot()
+      .AutoHeight()
+      [
+         SNew(STextBlock)
+         .AutoWrapText(true)
+      .Text(LOCTEXT("SnapMap_RebuildCacheHelpText",
+         "Rebuild the cache whenever you change the module list below or if the module level files have been changed in any way.\nThis needs to be done in the editor before building the dungeon at runtime to speed things up\n"))
+      ]
+   + SVerticalBox::Slot()
+      .AutoHeight()
+      [
+         SNew(SButton)
+         .Text(LOCTEXT("SnapMapCommand_RebuildModuleCache", "Build Module Cache"))
+      .OnClicked(FOnClicked::CreateStatic(&FSnapModuleDatabaseCustomization::BuildDatabaseCache,
+         &DetailBuilder))
+      ]
+      ]
+      ];
+}
+
+TSharedRef<IDetailCustomization> FSnapModuleDatabaseCustomization::MakeInstance() {
+   return MakeShareable(new FSnapModuleDatabaseCustomization);
+}
+
+FReply FSnapModuleDatabaseCustomization::BuildDatabaseCache(IDetailLayoutBuilder* DetailBuilder) {
+   USnapMapModuleDatabase* ModuleDatabase = FDungeonEditorUtils::GetBuilderObject<USnapMapModuleDatabase>(DetailBuilder);
+   if (ModuleDatabase) {
+      FSnapMapModuleDBUtils::BuildModuleDatabaseCache(ModuleDatabase);
+   }
+
+   return FReply::Handled();
 }
 
 //////////////// FSnapGridFlowModuleDatabaseCustomization ////////////////////

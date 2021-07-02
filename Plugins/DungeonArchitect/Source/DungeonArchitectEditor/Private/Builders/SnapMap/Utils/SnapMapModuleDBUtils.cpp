@@ -6,6 +6,7 @@
 #include "Frameworks/Snap/SnapModuleDBBuilder.h"
 
 void FSnapMapModuleDBUtils::BuildModuleDatabaseCache(USnapMapModuleDatabase* InDatabase) {
+   UE_LOG(LogTemp, Log, TEXT("BuildModuleDatabaseCache original"));
     if (!InDatabase) return;
 
     typedef TSnapModuleDatabaseBuilder<

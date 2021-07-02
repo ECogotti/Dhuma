@@ -110,10 +110,24 @@ void FDungeonLevelStreamer::Process(UWorld* InWorld, const FDungeonLevelStreamin
             float BestDistA = MAX_flt;
             float BestDistB = MAX_flt;
             for (const FVector& ViewLocation : SourceLocations) {
-                const float DistA = A.Chunk->Bounds.ComputeSquaredDistanceToPoint(ViewLocation);
-                const float DistB = B.Chunk->Bounds.ComputeSquaredDistanceToPoint(ViewLocation);
-                BestDistA = FMath::Min(BestDistA, DistA);
-                BestDistB = FMath::Min(BestDistB, DistB);
+               
+               //take the min distance of all bounds
+               float AMinDist = -1;
+               for (auto bound : A.Chunk->Bounds)
+               {
+                  const float DistA = /*A.Chunk->Bounds*/bound.ComputeSquaredDistanceToPoint(ViewLocation);
+                  AMinDist = (AMinDist == -1 || AMinDist > DistA) ? DistA : AMinDist;
+               }
+
+               float BMinDist = -1;
+               for (auto bound : B.Chunk->Bounds)
+               {
+                  const float DistB = /*B.Chunk->Bounds*/bound.ComputeSquaredDistanceToPoint(ViewLocation);
+                  BMinDist = (BMinDist == -1 || BMinDist > DistB) ? DistB : BMinDist;
+               }
+                
+                BestDistA = FMath::Min(BestDistA, AMinDist);
+                BestDistB = FMath::Min(BestDistB, BMinDist);
             }
             return BestDistA < BestDistB;
         });
@@ -191,16 +205,32 @@ public:
     FDAStreamerDistanceVisibilityStrategy(const FVector& InVisibilityDepth) : VisibilityDepth(InVisibilityDepth) {}
     virtual void GetVisibleChunks(UDungeonStreamingChunk* StartChunk, const TArray<UDungeonStreamingChunk*>& AllChunks, TArray<UDungeonStreamingChunk*>& OutVisibleChunks) const override {
         if (!StartChunk) return;
+
+       //Roberta: how to find the center of the startChunk?
+        //Create a new big box that include all
+        TArray<FVector> bounds;
+        for (auto bound : StartChunk->Bounds)
+        {
+           bounds.Add(bound.GetCenter() + bound.GetExtent());
+           bounds.Add(bound.GetCenter() - bound.GetExtent());
+        }
+        FBox startChunkBound = FBox(bounds.GetData(), bounds.Num());
         
-        const FVector Center = StartChunk->Bounds.GetCenter();
-        FVector Extent = StartChunk->Bounds.GetExtent();
+        const FVector Center = /*StartChunk->Bounds*/startChunkBound.GetCenter();
+        FVector Extent = /*StartChunk->Bounds*/startChunkBound.GetExtent();
         Extent += VisibilityDepth;
 
         const FBox VisibilityBounds(Center - Extent, Center + Extent);
+        
+        //Roberta: if at least one of the bounds intersects the VisibilityBounds then consider this bound visible
         for (UDungeonStreamingChunk* Chunk : AllChunks) {
             if (!Chunk) continue;
-            if (Chunk->Bounds.Intersect(VisibilityBounds)) {
-                OutVisibleChunks.Add(Chunk);
+            for (auto bound : Chunk->Bounds)
+            {
+               if (/*Chunk->Bounds.*/bound.Intersect(VisibilityBounds)) {
+                  OutVisibleChunks.Add(Chunk);
+                  continue; //avoid adding the same chunk multiple times
+               }
             }
         }
     }
@@ -227,12 +257,21 @@ bool FDungeonLevelStreamer::GetNearestChunk(const TArray<UDungeonStreamingChunk*
     float NearestDistanceSq = MAX_int32;
 
     for (UDungeonStreamingChunk* Chunk : Chunks) {
-        if (Chunk->Bounds.IsInside(ViewLocation)) {
-            OutNearestChunk = Chunk;
-            return true;
-        }
-
-        float DistanceSq = Chunk->Bounds.ComputeSquaredDistanceToPoint(ViewLocation);
+       //the chunk is inside if at least one bound is inside
+       for (auto bound : Chunk->Bounds)
+       {
+          if (/*Chunk->Bounds*/bound.IsInside(ViewLocation)) {
+             OutNearestChunk = Chunk;
+             return true;
+          }
+       }
+       //the distance should be the min distance of all bounds
+       float DistanceSq = MAX_int32;
+       for (auto bound : Chunk->Bounds)
+       {
+          float currDistanceSq = /*Chunk->Bounds*/bound.ComputeSquaredDistanceToPoint(ViewLocation);
+          DistanceSq = currDistanceSq < DistanceSq ? currDistanceSq : DistanceSq;
+       }
         if (DistanceSq < NearestDistanceSq) {
             OutNearestChunk = Chunk;
             NearestDistanceSq = DistanceSq;

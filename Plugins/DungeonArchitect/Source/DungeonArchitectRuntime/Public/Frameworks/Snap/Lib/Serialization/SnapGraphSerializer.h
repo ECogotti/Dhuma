@@ -42,6 +42,8 @@ private:
         ModuleData.Level = InNode->ModuleDBItem->GetLevel();
         ModuleData.Category = InNode->ModuleDBItem->GetCategory();
         ModuleData.ModuleBounds = InNode->ModuleDBItem->GetBounds();
+        //for(auto b : InNode->ModuleDBItem->GetBounds()) //Roberta
+        // ModuleData.ModuleBounds.Add(b);
         OutModuleInstances.Add(ModuleData);
 
         // Save the node's outgoing links in the connection array and traverse those links

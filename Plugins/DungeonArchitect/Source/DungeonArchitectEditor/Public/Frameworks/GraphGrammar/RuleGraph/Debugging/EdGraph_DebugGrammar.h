@@ -28,12 +28,12 @@ struct FFlowDebugGraphExecState {
 
 DECLARE_DELEGATE_FourParams(FOnSnapMapDiagVisLoadLevel, const FGuid& /* InNodeId */,
                              TSoftObjectPtr<UWorld> /* ModuleLevel */,
-                             const FBox& /* ModuleBounds */,
+                             const TArray<FBox>& /* ModuleBounds */,
                              const FTransform& /* InWorldTransform */);
 DECLARE_DELEGATE_OneParam(FOnSnapMapDiagVisUnloadLevel, const FGuid& /* InNodeId */);
 DECLARE_DELEGATE_ThreeParams(FOnSnapMapDiagVisSetConnectionState, const FGuid& /* InNodeId */,
                              const FGuid& /* InConnectionId */, bool /* bIsDoor */);
-DECLARE_DELEGATE_TwoParams(FOnSnapMapDiagVisSetDebugBox, const FBox& /* InWorldBounds */, const FColor& /* InColor */);
+DECLARE_DELEGATE_TwoParams(FOnSnapMapDiagVisSetDebugBox, const TArray<FBox>& /* InWorldBounds */, const FColor& /* InColor */);
 
 UCLASS()
 class DUNGEONARCHITECTEDITOR_API UEdGraph_DebugGrammar : public UEdGraph_Grammar {
