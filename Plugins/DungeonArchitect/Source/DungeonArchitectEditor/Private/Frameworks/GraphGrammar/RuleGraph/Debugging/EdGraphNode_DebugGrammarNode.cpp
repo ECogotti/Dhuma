@@ -16,7 +16,7 @@ void UEdGraphNode_DebugGrammarNode::ResetState() {
 void UEdGraphNode_DebugGrammarNode::ResetModuleState() {
     bModuleAssigned = false;
     ModuleLevel = nullptr;
-    ModuleBounds = FBox(ForceInit);
+    ModuleBounds.Reset();// = FBox(ForceInit); //Roberta
     WorldTransform = FTransform::Identity;
     IncomingDoorIndex = -1;
     RemoteDoorIndex = -1;

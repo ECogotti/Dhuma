@@ -2,6 +2,7 @@
 
 #include "Frameworks/LevelStreaming/DungeonLevelStreamingNavigation.h"
 
+#include "Core/Utils/MathUtils.h"
 #include "NavMesh/NavMeshBoundsVolume.h"
 #include "NavigationSystem.h"
 
@@ -13,7 +14,7 @@ void UDungeonLevelStreamingNavigation::Release() {
     OwningWorld = nullptr;
 }
 
-void UDungeonLevelStreamingNavigation::AddLevelNavigation(ULevel* InLevel, const FBox& ChunkBounds) {
+void UDungeonLevelStreamingNavigation::AddLevelNavigation(ULevel* InLevel, const TArray<FBox>& ChunkBounds) {
     if (!bEnabled) return;
 
     UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(OwningWorld.Get());
@@ -28,8 +29,9 @@ void UDungeonLevelStreamingNavigation::AddLevelNavigation(ULevel* InLevel, const
 
         if (NavVolume && bAutoResizeNavVolume) {
             NavVolume->GetRootComponent()->Mobility = EComponentMobility::Movable;
-            NavVolume->SetActorLocation(ChunkBounds.GetCenter());
-            FVector Scale = ChunkBounds.GetExtent() * 2.0f / 200.0f;
+            FBox bound = FMathUtils::ComputeCompoundBound(ChunkBounds);
+            NavVolume->SetActorLocation(bound.GetCenter());
+            FVector Scale = bound.GetExtent() * 2.0f / 200.0f;
             NavVolume->SetActorScale3D(Scale);
             NavVolume->SetActorRotation(FQuat::Identity);
         }

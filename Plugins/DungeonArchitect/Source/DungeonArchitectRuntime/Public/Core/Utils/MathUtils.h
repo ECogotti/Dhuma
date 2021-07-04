@@ -66,6 +66,18 @@ public:
             Array[j] = Temp;
         }
     }
+
+    static FBox ComputeCompoundBound(const TArray<FBox>& ChunkBounds)
+    {
+       TArray<FVector> bounds;
+       for (auto bound : ChunkBounds)
+       {
+          bounds.Add(bound.GetCenter() + bound.GetExtent());
+          bounds.Add(bound.GetCenter() - bound.GetExtent());
+       }
+       FBox bound = FBox(bounds.GetData(), bounds.Num());
+       return bound;
+    }
 };
 
 // Blur algorithm from: http://blog.ivank.net/fastest-gaussian-blur.html (MIT License)

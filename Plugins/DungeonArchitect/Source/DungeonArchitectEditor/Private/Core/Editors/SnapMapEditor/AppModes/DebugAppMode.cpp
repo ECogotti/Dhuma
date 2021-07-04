@@ -131,7 +131,7 @@ void FSnapMapEditor_DebugAppMode::AddReferencedObjects(FReferenceCollector& Coll
 void FSnapMapEditor_DebugAppMode::OnResultNodeDoubleClicked(UEdGraphNode* InNode) {
     if (UEdGraphNode_DebugGrammarNode* DebugNode = Cast<UEdGraphNode_DebugGrammarNode>(InNode)) {
         if (DebugNode->bModuleAssigned) {
-            const FBox BoundsToFocus = DebugNode->ModuleBounds.TransformBy(DebugNode->WorldTransform);
+            const FBox BoundsToFocus = DebugNode->ModuleBounds[0].TransformBy(DebugNode->WorldTransform); //TODO Roberta
             Viewport->GetViewportClient()->FocusViewportOnBox(BoundsToFocus);
         }
     }
@@ -261,7 +261,7 @@ ASnapMapFlowEditorVisualization::ASnapMapFlowEditorVisualization() {
 }
 
 void ASnapMapFlowEditorVisualization::LoadLevel(const FGuid& InNodeId, TSoftObjectPtr<UWorld> ModuleLevel,
-                             const FBox& ModuleBounds, const FTransform& InWorldTransform) {
+                             const TArray<FBox>& ModuleBounds, const FTransform& InWorldTransform) {
     UnloadLevel(InNodeId);
 
     UWorld* World = GetWorld();
@@ -392,7 +392,7 @@ void ASnapMapFlowEditorVisualization::UnloadAllLevels() {
     }
 }
 
-void ASnapMapFlowEditorVisualization::SetDebugBox(const FBox& InDebugDrawBounds, const FColor& InColor) {
+void ASnapMapFlowEditorVisualization::SetDebugBox(const TArray<FBox>& InDebugDrawBounds, const FColor& InColor) {
     DebugDrawBounds = InDebugDrawBounds;
     DebugDrawColor = InColor;
 }
@@ -402,9 +402,12 @@ void ASnapMapFlowEditorVisualization::Tick(float DeltaSeconds) {
 }
 
 void ASnapMapFlowEditorVisualization::DebugDraw() {
-    if (DebugDrawBounds.IsValid) {
-        DrawDebugBox(GetWorld(), DebugDrawBounds.GetCenter(), DebugDrawBounds.GetExtent(), DebugDrawColor, false, -1, 0,
-                     50);
+    if (DebugDrawBounds.Num() > 0) {
+       for (auto b : DebugDrawBounds)
+       {
+          DrawDebugBox(GetWorld(), b.GetCenter(), b.GetExtent(), DebugDrawColor, false, -1, 0,
+             50);
+       }
     }
 }
 

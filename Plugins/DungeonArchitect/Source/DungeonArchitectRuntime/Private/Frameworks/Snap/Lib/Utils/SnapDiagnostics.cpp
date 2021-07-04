@@ -26,7 +26,7 @@ void SnapLib::FDiagnostics::LogBacktrackFromNode(bool InbSuccess) {
     Step.Payload = Payload;
 }
 
-void SnapLib::FDiagnostics::LogAssignModule(TSoftObjectPtr<UWorld> InModuleLevel, FBox InModuleBounds,
+void SnapLib::FDiagnostics::LogAssignModule(TSoftObjectPtr<UWorld> InModuleLevel, TArray<FBox> InModuleBounds,
                                                        const FTransform& InWorldTransform,
                                                        int32 InIncomingDoorIndex, int32 InRemoteDoorIndex,
                                                        const FGuid& InIncomingDoorId, const FGuid& InRemoteDoorId,

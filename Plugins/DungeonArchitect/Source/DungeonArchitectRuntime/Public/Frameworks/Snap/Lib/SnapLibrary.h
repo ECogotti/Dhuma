@@ -57,6 +57,8 @@ namespace SnapLib {
         uint32 NetworkId = 0;
 
         FBox GetModuleBounds() const;
+
+        TArray<FBox> GetAllModuleBounds() const;
     };
 
     struct FGrowthInputState {
@@ -125,7 +127,7 @@ namespace SnapLib {
     {
     public:
         virtual ~IModuleDatabaseItem() {}
-        virtual FBox GetBounds() = 0;
+        virtual TArray<FBox> GetBounds() = 0;
         virtual FName GetCategory() = 0;
         virtual TSoftObjectPtr<UWorld> GetLevel() = 0;
         virtual FModuleNodePtr CreateModuleNode(const FGuid& InNodeId) = 0;

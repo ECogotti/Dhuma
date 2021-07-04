@@ -10,16 +10,17 @@
 namespace SnapModuleDatabaseBuilder {
     class FDefaultModulePolicy {
     public:
-        FBox CalculateBounds(ULevel* Level) const {
-            FBox LevelBounds = FBox(ForceInit);
+        TArray<FBox> CalculateBounds(ULevel* Level) const {
+           TArray<FBox > LevelBounds;// = FBox(ForceInit);
             for (AActor* Actor : Level->Actors) {
                 if (ALevelBounds* LevelBoundsActor = Cast<ALevelBounds>(Actor)) {
-                    LevelBounds = LevelBoundsActor->GetComponentsBoundingBox();
+                    LevelBounds.Push(LevelBoundsActor->GetComponentsBoundingBox());
                     break;
                 }
             }
-            if (!LevelBounds.IsValid) {
-                LevelBounds = ALevelBounds::CalculateLevelBounds(Level);
+            //if (!LevelBounds.IsValid) {
+            if (LevelBounds.Num() == 0) {
+                LevelBounds.Push(ALevelBounds::CalculateLevelBounds(Level));
             }
             return LevelBounds;
         }
@@ -48,6 +49,7 @@ class TSnapModuleDatabaseBuilder {
 public:
     
     static void Build(TArray<TModuleItem>& InModules, UObject* InModuleDB) {
+       UE_LOG(LogTemp, Log, TEXT("Builds"));
         for (TModuleItem& Module : InModules) {
             UWorld* World = Module.Level.LoadSynchronous();
 
@@ -67,8 +69,9 @@ public:
                         TConnectionPolicy::Build(ConnectionActor, Connection);
                     }
                 }
-
-                Module.ModuleBounds = ModulePolicy.CalculateBounds(Level);
+                UE_LOG(LogTemp, Log, TEXT("Calculate Bounds"));
+                Module.ModuleBounds.Reset();
+                Module.ModuleBounds.Append(ModulePolicy.CalculateBounds(Level));
                 ModulePolicy.PostProcess(Module, Level);
             }
         }
