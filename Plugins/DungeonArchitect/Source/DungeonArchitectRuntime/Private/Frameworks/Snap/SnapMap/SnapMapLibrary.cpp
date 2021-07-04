@@ -65,3 +65,14 @@ FSnapMapModuleDatabaseImpl::FSnapMapModuleDatabaseImpl(USnapMapModuleDatabase* M
     }
 }
 
+///////////////////////////// FSnapMapModuleDatabaseImpl /////////////////////////////
+FCustomBoundsModuleDatabaseImpl::FCustomBoundsModuleDatabaseImpl(UCustomBoundsModuleDB* ModuleDB) {
+   if (ModuleDB) {
+      for (const FSnapMapModuleDatabaseItem& ModuleInfo : ModuleDB->Modules) {
+         TArray<SnapLib::IModuleDatabaseItemPtr>& CategoryModuleNames = ModulesByCategory.FindOrAdd(
+            ModuleInfo.Category);
+         CategoryModuleNames.Add(MakeShareable(new FSnapMapGraphModDBItemImpl(ModuleInfo)));
+      }
+   }
+}
+

@@ -59,6 +59,7 @@
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionComponent.h"
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleDatabase.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
+#include "Frameworks/Snap/SnapMap/CustomBoundsModuleDB.h"
 #include "Frameworks/ThemeEngine/Markers/PlaceableMarker.h"
 
 #include "AssetToolsModule.h"
@@ -104,6 +105,7 @@ public:
 		    RegisterCustomClassLayout<ADungeonDebug, FDungeonDebugCustomization>(PropertyEditorModule);
 		    RegisterCustomClassLayout<ASnapConnectionActor, FSnapConnectionActorCustomization>(PropertyEditorModule);
 		    RegisterCustomClassLayout<USnapMapModuleDatabase, FSnapModuleDatabaseCustomization>(PropertyEditorModule);
+          RegisterCustomClassLayout<UCustomBoundsModuleDB, FSnapCustomBoundsModuleDatabaseCustomization>(PropertyEditorModule); //Roberta
 		    RegisterCustomClassLayout<USnapGridFlowModuleDatabase, FSnapGridFlowModuleDatabaseCustomization>(PropertyEditorModule);
 		    RegisterCustomClassLayout<ADACustomInputConfigBinder, FDACustomInputBinderCustomization>(PropertyEditorModule);
 		    FFlowEditorTaskCustomizations::RegisterTaskNodes(PropertyEditorModule);
@@ -126,6 +128,7 @@ public:
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FGridFlowFlowAssetTypeActions));
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FSnapConnectionAssetTypeActions));
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FSnapMapModuleDBTypeActions));
+        RegisterAssetTypeAction(AssetTools, MakeShareable(new FCustomBoundsModuleDBTypeActions));
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FSnapGridFlowAssetTypeActions));
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FSnapGridFlowModuleBoundsAssetTypeActions));
         RegisterAssetTypeAction(AssetTools, MakeShareable(new FSnapGridFlowModuleDatabaseTypeActions));

@@ -358,7 +358,7 @@ void USnapGridFlowBuilder::HandleChunkLoadedAndVisible(USnapStreamingChunk* InCh
     }
 
     TMap<APlaceableMarkerActor*, FString> MarkersToEmit;
-    const int32 MarkerRandomSeed = HashCombine(SnapGridConfig->Seed, GetTypeHash(InChunk->Bounds.GetCenter()));
+    const int32 MarkerRandomSeed = HashCombine(SnapGridConfig->Seed, GetTypeHash(InChunk->Bounds[0].GetCenter())); //Roberta
     const FRandomStream RandomMarkerSelection(MarkerRandomSeed);
     FMathUtils::Shuffle(PlaceableMarkers, RandomMarkerSelection);
     for (UFlowGraphItem* ItemInfo : Items) {

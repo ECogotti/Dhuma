@@ -18,7 +18,7 @@ public:
     void Initialize(UWorld* InWorld);
     void Release();
 
-    void AddLevelNavigation(ULevel* InLevel, const FBox& ChunkBounds);
+    void AddLevelNavigation(ULevel* InLevel, const TArray<FBox>& ChunkBounds);
     void RemoveLevelNavigation(ULevel* InLevel);
 
 private:

@@ -269,9 +269,9 @@ void UEdGraph_DebugGrammar::SetCurrentNodeStatusMessage(const FString& InMessage
 }
 
 void UEdGraph_DebugGrammar::HilightCurrentNode(const FColor& InColor) {
-    FBox Bounds(ForceInit);
+   TArray<FBox> Bounds; // (ForceInit);
     if (State.CurrentNode.IsValid() && State.CurrentNode->bModuleAssigned) {
-        Bounds = State.CurrentNode->ModuleBounds.TransformBy(State.CurrentNode->WorldTransform);
+        Bounds.Push(State.CurrentNode->ModuleBounds[0].TransformBy(State.CurrentNode->WorldTransform)); //TODO roberta
     }
     OnVisualizeSetDebugBox.ExecuteIfBound(Bounds, InColor);
 }

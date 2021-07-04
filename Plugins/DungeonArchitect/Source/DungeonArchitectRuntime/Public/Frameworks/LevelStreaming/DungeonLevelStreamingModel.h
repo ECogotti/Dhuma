@@ -19,13 +19,16 @@ public:
     FGuid ID;
 
     UPROPERTY(BlueprintReadOnly, Category=Dungeon)
-    FBox Bounds;
+    TArray<FBox> Bounds;
 
     UPROPERTY(BlueprintReadOnly, Category=Dungeon)
     TSet<UDungeonStreamingChunk*> Neighbors;
 
     UPROPERTY(BlueprintReadOnly, Category=Dungeon)
     bool bSpawnRoomChunk = false;
+    
+    UPROPERTY(BlueprintReadOnly, Category = Dungeon)
+    FColor Color = FColor::Red;
 
 public:
     UFUNCTION(BlueprintCallable, Category=Dungeon)

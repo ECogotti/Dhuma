@@ -19,7 +19,9 @@ void USnapMapDungeonModel::Reset() {
 void USnapMapDungeonModel::GenerateLayoutData(FDungeonLayoutData& OutLayout) {
     FBox WorldBounds(ForceInit);
     for (const FSnapMapModuleInstanceSerializedData& ModuleInstance : ModuleInstances) {
-        FBox ModuleWorldBounds = ModuleInstance.ModuleBounds.TransformBy(ModuleInstance.WorldTransform);
+       FBox ModuleWorldBounds;
+       if (ModuleInstance.ModuleBounds.Num() > 0)
+        ModuleWorldBounds = ModuleInstance.ModuleBounds[0].TransformBy(ModuleInstance.WorldTransform); //TODO Roberta
         WorldBounds += ModuleWorldBounds;
     }
     FVector Offset = -WorldBounds.Min;
@@ -37,7 +39,9 @@ void USnapMapDungeonModel::GenerateLayoutData(FDungeonLayoutData& OutLayout) {
     }
 
     for (const FSnapMapModuleInstanceSerializedData& ModuleInstance : ModuleInstances) {
-        FBox Bounds = ModuleInstance.ModuleBounds
+       FBox Bounds;
+       if (ModuleInstance.ModuleBounds.Num() > 0) 
+          Bounds = ModuleInstance.ModuleBounds[0] //TODO Roberta
                                     .TransformBy(ModuleInstance.WorldTransform)
                                     .TransformBy(WorldToScreen);
 
@@ -68,7 +72,9 @@ void USnapMapDungeonModel::GenerateLayoutData(FDungeonLayoutData& OutLayout) {
 
     // Add Points of interest
     for (const FSnapMapModuleInstanceSerializedData& ModuleInstance : ModuleInstances) {
-        FBox Bounds = ModuleInstance.ModuleBounds
+       FBox Bounds;
+       if (ModuleInstance.ModuleBounds.Num() > 0) 
+          Bounds = ModuleInstance.ModuleBounds[0] //TODO Roberta
                                     .TransformBy(ModuleInstance.WorldTransform)
                                     .TransformBy(WorldToScreen);
 

@@ -21,9 +21,9 @@ struct DUNGEONARCHITECTRUNTIME_API FSnapMapModuleInstanceSerializedData {
     UPROPERTY()
     FName Category;
     
-
+    //Roberta
     UPROPERTY()
-    FBox ModuleBounds;
+    TArray<FBox> ModuleBounds;
 };
 
 typedef TSnapGraphSerializer<FSnapMapModuleInstanceSerializedData> FSnapMapGraphSerializer;
