@@ -32,6 +32,16 @@ public:
     static FReply BuildDatabaseCache(IDetailLayoutBuilder* DetailBuilder);
 };
 
+class FSnapCustomBoundsModuleDatabaseCustomization : public IDetailCustomization {
+public:
+   // IDetailCustomization interface
+   virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
+   // End of IDetailCustomization interface
+
+   static TSharedRef<IDetailCustomization> MakeInstance();
+   static FReply BuildDatabaseCache(IDetailLayoutBuilder* DetailBuilder);
+};
+
 UCLASS()
 class USnapGridFlowModuleDBImportSettings : public UObject {
     GENERATED_BODY()

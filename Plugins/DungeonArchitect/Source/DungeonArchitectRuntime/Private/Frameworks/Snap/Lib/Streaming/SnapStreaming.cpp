@@ -315,10 +315,11 @@ namespace {
         check(!VisitedChunkMap.Contains(Node));
 
         UDungeonStreamingChunk* Chunk = NewObject<UDungeonStreamingChunk>(ChunkOwner, ChunkClass);
+        Chunk->Color = FColor::MakeRandomColor();
         FnInitChunk(Chunk, Node);
         
         Chunk->ID = Node->ModuleInstanceId;
-        Chunk->Bounds = Node->GetModuleBounds();
+        Chunk->Bounds = Node->GetAllModuleBounds(); //Roberta
         VisitedChunkMap.Add(Node, Chunk);
 
         for (SnapLib::FModuleDoorPtr OutgoingDoor : Node->Outgoing) {

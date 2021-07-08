@@ -6,6 +6,7 @@
 #include "Core/Common/ContentBrowserMenuExtensions.h"
 #include "DungeonArchitectEditorModule.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
+#include "Frameworks/Snap/SnapMap/CustomBoundsModuleDB.h"
 
 #include "AssetToolsModule.h"
 
@@ -35,6 +36,32 @@ const TArray<FText>& FSnapMapModuleDBTypeActions::GetSubMenus() const {
         FDAContentBrowserSubMenuNames::SnapMap
     };
     return SubMenus;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// FCustomBoundsModuleDBTypeActions
+
+FText FCustomBoundsModuleDBTypeActions::GetName() const {
+   return LOCTEXT("CustomBoundsModuleDBTypeActions", "Custom Bounds - Module Database");
+}
+
+FColor FCustomBoundsModuleDBTypeActions::GetTypeColor() const {
+   return FColor(64, 128, 255);
+}
+
+UClass* FCustomBoundsModuleDBTypeActions::GetSupportedClass() const {
+   return UCustomBoundsModuleDB::StaticClass();
+}
+
+uint32 FCustomBoundsModuleDBTypeActions::GetCategories() {
+   return IDungeonArchitectEditorModule::Get().GetDungeonAssetCategoryBit();
+}
+
+const TArray<FText>& FCustomBoundsModuleDBTypeActions::GetSubMenus() const {
+   static const TArray<FText> SubMenus = {
+       FDAContentBrowserSubMenuNames::SnapMap
+   };
+   return SubMenus;
 }
 
 #undef LOCTEXT_NAMESPACE

@@ -16,7 +16,7 @@ public:
     bool bProcessed = false;
     bool bModuleAssigned = false;
     TSoftObjectPtr<UWorld> ModuleLevel;
-    FBox ModuleBounds;
+    TArray<FBox> ModuleBounds; //Roberta
     FTransform WorldTransform;
     FString StatusMessage;
     int32 IncomingDoorIndex;

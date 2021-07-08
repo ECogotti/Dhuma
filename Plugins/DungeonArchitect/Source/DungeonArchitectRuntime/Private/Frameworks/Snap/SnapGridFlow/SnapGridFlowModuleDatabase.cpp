@@ -83,7 +83,7 @@ void FSGFModuleAssemblyBuilder::Build(const FVector& InChunkSize,
 
     enum class EAssemblySide : uint8 { Unknown, Front, Left, Back, Right, Down, Top };
     
-    const FVector BaseOffset = -InModuleInfo.ModuleBounds.Min;
+    const FVector BaseOffset = InModuleInfo.ModuleBounds.Num() > 0 ? -InModuleInfo.ModuleBounds[0].Min : FVector::ZeroVector; //To be fixed Roberta
     for (int32 ConnectionIdx = 0; ConnectionIdx < InModuleInfo.Connections.Num(); ConnectionIdx++) {
         const FSnapGridFlowModuleDatabaseConnectionInfo& ConnectionInfo = InModuleInfo.Connections[ConnectionIdx];
         FVector ConnectionLocation = ConnectionInfo.Transform.GetLocation() + BaseOffset;

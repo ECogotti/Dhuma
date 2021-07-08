@@ -71,11 +71,11 @@ class ASnapMapFlowEditorVisualization : public AActor {
 public:
     ASnapMapFlowEditorVisualization();
     void LoadLevel(const FGuid& InNodeId, TSoftObjectPtr<UWorld> ModuleLevel,
-                             const FBox& ModuleBounds, const FTransform& InWorldTransform);
+                             const TArray<FBox>& ModuleBounds, const FTransform& InWorldTransform);
     void UnloadLevel(const FGuid& InNodeId);
     void UpdateConnectionState(const FGuid& InNodeId, const FGuid& InConnectionId, bool bIsDoor);
     void UnloadAllLevels();
-    void SetDebugBox(const FBox& InDebugDrawBounds, const FColor& InColor);
+    void SetDebugBox(const TArray<FBox>& InDebugDrawBounds, const FColor& InColor);
 
     virtual void Tick(float DeltaSeconds) override;
     virtual bool ShouldTickIfViewportsOnly() const override { return true; }
@@ -91,7 +91,7 @@ private:
     TMap<FGuid, UPackage*> LoadedPackages;
 
     UPROPERTY(Transient)
-    FBox DebugDrawBounds;
+    TArray<FBox> DebugDrawBounds;
 
     UPROPERTY(Transient)
     FColor DebugDrawColor;

@@ -36,7 +36,7 @@ struct DUNGEONARCHITECTRUNTIME_API FSnapMapModuleDatabaseItem {
     FName Category = "Room";
 
     UPROPERTY(VisibleAnywhere, Category = Module)
-    FBox ModuleBounds;
+    TArray<FBox> ModuleBounds;   //Roberta
 
     UPROPERTY(VisibleAnywhere, Category = Module)
     TArray<FSnapMapModuleDatabaseConnectionInfo> Connections;

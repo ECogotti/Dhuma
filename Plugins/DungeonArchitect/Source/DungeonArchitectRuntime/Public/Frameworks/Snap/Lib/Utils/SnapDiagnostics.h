@@ -45,7 +45,7 @@ namespace SnapLib {
         FDiagnostics();
         void LogMoveToNode(const FGuid& InNodeId);
         void LogBacktrackFromNode(bool InbSuccess);
-        void LogAssignModule(TSoftObjectPtr<UWorld> InModuleLevel, FBox InModuleBounds, const FTransform& InWorldTransform,
+        void LogAssignModule(TSoftObjectPtr<UWorld> InModuleLevel, TArray<FBox> InModuleBounds, const FTransform& InWorldTransform,
                              int32 InIncomingDoorIndex, int32 InRemoteDoorIndex, const FGuid& InIncomingDoorId,
                              const FGuid& InRemoteDoorId,
                              const FGuid& InNodeId, const FGuid& InRemoteNodeId, const FBox& InIncomingDoorBounds);
@@ -68,7 +68,7 @@ namespace SnapLib {
 
     struct FPayload_AssignModule : IPayload {
         TSoftObjectPtr<UWorld> ModuleLevel;
-        FBox ModuleBounds;
+        TArray<FBox> ModuleBounds; //Roberta
         FTransform WorldTransform = FTransform::Identity;
         int32 IncomingDoorIndex = -1;
         int32 RemoteDoorIndex = -1;

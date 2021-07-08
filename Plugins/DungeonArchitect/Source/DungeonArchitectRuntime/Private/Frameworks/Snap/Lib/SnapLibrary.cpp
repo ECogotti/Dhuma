@@ -14,7 +14,20 @@ FORCEINLINE int32 PermuteCompareTo(const SnapLib::ISnapGraphNodePtr A, const Sna
 class UGrammarScriptGraph;
 
 FBox SnapLib::FModuleNode::GetModuleBounds() const {
-    return ModuleDBItem->GetBounds().TransformBy(WorldTransform);
+   if (ModuleDBItem->GetBounds().Num() > 0)
+    return ModuleDBItem->GetBounds()[0].TransformBy(WorldTransform); //Roberta
+
+   UE_LOG(LogTemp, Error, TEXT("SnapLib::FModuleNode::GetModuleBounds(): unexpected empty array"));
+   return FBox(); 
+}
+
+TArray<FBox> SnapLib::FModuleNode::GetAllModuleBounds() const {
+   TArray<FBox> boxes;
+   for(FBox var : ModuleDBItem->GetBounds())
+   {
+      boxes.Add(var.TransformBy(WorldTransform));
+   }
+   return boxes;
 }
 
 ///////////////////////////// FSnapMapGraphGenerator /////////////////////////////
@@ -141,7 +154,7 @@ void SnapLib::FSnapGraphGenerator::GrowNode(SnapLib::ISnapGraphNodePtr MissionNo
                     FBox DoorLocalBounds = FBox(FVector(-200, -50, 0), FVector(200, 50, 400));
                     FBox DoorWorldBounds = DoorLocalBounds.TransformBy(DoorWorldTransform);
                 
-                    DIAGNOSTIC_LOG(AssignModule, Module->GetLevel(), Module->GetBounds(), ModuleNode->WorldTransform, GrowthFrame.DoorIdx, RemoteDoorIndex,
+                    DIAGNOSTIC_LOG(AssignModule, Module->GetLevel(), Module->GetBounds()/*.Num() > 0 ? Module->GetBounds()[0] : FBox()*/, ModuleNode->WorldTransform, GrowthFrame.DoorIdx, RemoteDoorIndex,
                                   DoorId, RemoteDoorId, NodeId, RemoteNodeId, DoorWorldBounds);
                 }
 
@@ -167,14 +180,16 @@ void SnapLib::FSnapGraphGenerator::GrowNode(SnapLib::ISnapGraphNodePtr MissionNo
                     break;
                 }
 
-                FBox NodeBounds = ModuleNode->GetModuleBounds();
+                //Roberta
+                //FBox NodeBounds = ModuleNode->GetModuleBounds(); //this should take into consideration all the bounds
+               TArray<FBox> NodeBounds = ModuleNode->GetAllModuleBounds();
             
                 // Create permutation engine and iterate each permutation
                 SnapLib::FBranchGrowthPermutations PermutationEngine(OutgoingDoorIndices, OutgoingNodes);
                 while (PermutationEngine.CanRun()) {
                     bool bAllBranchesSuccessful = true;
                     TArray<FBox> BranchOcclusion;
-                    BranchOcclusion.Add(NodeBounds);
+                    BranchOcclusion.Append(NodeBounds);
 
                     TSet<FGuid> BranchVisited;
                     BranchVisited.Add(MissionNode->GetNodeID());
@@ -457,28 +472,37 @@ bool SnapLib::FSnapGraphGenerator::GetDoorFitConfiguration(SnapLib::FModuleDoorP
 }
 
 bool SnapLib::FSnapGraphGenerator::ModuleOccludes(const FModuleNodePtr ModuleNode, SnapLib::ISnapGraphNodePtr MissionNode, const TArray<FBox>& OcclusionList) {
-    const FBox Bounds = ModuleNode->GetModuleBounds();
+    //const FBox Bounds = ModuleNode->GetModuleBounds();
+   const TArray<FBox> Bounds = ModuleNode->GetAllModuleBounds();
     // Make sure the negation volume constraints are satisfied
     for (const SnapLib::FSnapNegationVolumeState& NegationVolume : StaticState.NegationVolumes) {
         if (NegationVolume.bInverse) {
             // The module should be completely inside this 
-            if (!NegationVolume.Bounds.IsInside(Bounds)) {
-                return true;
-            }
+           for (auto bound : Bounds)
+           {
+              if (!NegationVolume.Bounds.IsInside(bound)) {
+                 return true;
+              }
+           }
         }
         else {
             // We should not intersect with the negation volume
-            if (Bounds.Intersect(NegationVolume.Bounds)) {
-                return true;
-            }
+           for (auto bound : Bounds)
+           {
+              if (bound.Intersect(NegationVolume.Bounds)) {
+                 return true;
+              }
+           }
         }
     }
-
-    const FBox TestingBounds = Bounds.ExpandBy(-StaticState.BoundsContraction);
-    for (const FBox& Occlusion : OcclusionList) {
-        if (TestingBounds.Intersect(Occlusion)) {
-            return true;
-        }
+    for (auto bound : Bounds)
+    {
+       const FBox TestingBounds = bound.ExpandBy(-StaticState.BoundsContraction);
+       for (const FBox& Occlusion : OcclusionList) {
+          if (TestingBounds.Intersect(Occlusion)) {
+             return true;
+          }
+       }
     }
     return false;
 }
