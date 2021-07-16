@@ -4,17 +4,37 @@
 #include "Builders/SnapMap/Utils/CustomBoundsModuleDBUtils.h"
 #include "Frameworks/Snap/SnapModuleDBBuilder.h"
 #include "Frameworks/Snap/SnapMap/CustomBoundsModuleDB.h"
+#include "Components/BoxComponent.h"
 
 
 
 namespace SnapModuleDatabaseBuilder {
+
+   static FBox GetComponentsBoundingBox(ALevelBounds* LevelBoundsActor)
+   {
+      if (LevelBoundsActor->GetRootComponent() != nullptr)
+      {
+         UE_LOG(LogTemp, Log, TEXT("GetScaledBoxExtent: %s"), *LevelBoundsActor->BoxComponent->GetScaledBoxExtent().ToString());
+         FVector BoundsCenter = LevelBoundsActor->GetRootComponent()->GetComponentLocation();
+         //FVector BoundsExtent = RootComponent->GetComponentTransform().GetScale3D() * 0.5f;
+         FVector BoundsExtent = LevelBoundsActor->BoxComponent->GetScaledBoxExtent();
+         return FBox(BoundsCenter - BoundsExtent,
+            BoundsCenter + BoundsExtent);
+      }
+      else
+         return ALevelBounds::CalculateLevelBounds((ULevel*)LevelBoundsActor);
+   }
+
+
    class FCustomBoundsModulePolicy {
+      
    public:
       TArray<FBox> CalculateBounds(ULevel* Level) const {
          TArray<FBox> LevelBounds; // = FBox(ForceInit);
          for (AActor* Actor : Level->Actors) {
             if (ALevelBounds* LevelBoundsActor = Cast<ALevelBounds>(Actor)) {
-               LevelBounds.Push(LevelBoundsActor->GetComponentsBoundingBox());
+               //LevelBounds.Push(LevelBoundsActor->GetComponentsBoundingBox());
+               LevelBounds.Push(SnapModuleDatabaseBuilder::GetComponentsBoundingBox(LevelBoundsActor));
             }
          }
          if (LevelBounds.Num() == 0) {
